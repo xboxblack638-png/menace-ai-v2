@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menace AI V2</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f2027, #2c5364);
+      color: white;
+    }
+
+    .container {
+      background: rgba(0,0,0,0.4);
+      padding: 25px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+    }
+
+    input {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    button {
+      background: #00c6ff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    video {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+
+    a {
+      display: none;
+      margin-top: 10px;
+      color: #00c6ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Menace AI V2 😈</h1>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <input type="text" id="prompt" placeholder="Describe what should happen">
+
+    <button onclick="generate()">Generate Video</button>
+
+    <p id="status"></p>
+
+    <video id="video" controls style="display:none;"></video>
+    <a id="downloadLink" download="menace.mp4">Download Video</a>
+  </div>
+
+  <script>
+    async function generate() {
+      const image = document.getElementById("imageInput").files[0];
+      const prompt = document.getElementById("prompt").value;
+
+      if (!image) {
+        alert("Upload an image first");
+        return;
+      }
+
+      document.getElementById("status").innerText = "Generating... wait a bit";
+
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("prompt", prompt);
+
+      const response = await fetch("PUT_YOUR_COLAB_LINK_HERE", {
+        method: "POST",
+        body: formData
+      });
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const video = document.getElementById("video");
+      video.src = url;
+      video.style.display = "block";
+
+      const download = document.getElementById("downloadLink");
+      download.href = url;
+      download.style.display = "block";
+
+      document.getElementById("status").innerText = "Done 😈";
+    }
+  </script>
+</body>
+</html>
