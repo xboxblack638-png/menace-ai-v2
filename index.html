@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menace AI V2</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+    :root {
+      --purple: #7c3aed;
+      --purple-light: #a78bfa;
+      --purple-dark: #4c1d95;
+      --pink: #db2777;
+      --bg1: #0a0010;
+      --bg2: #1a0030;
+      --bg3: #0d0020;
+      --card: rgba(124,58,237,0.08);
+      --border: rgba(167,139,250,0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at top left, #2a0050 0%, #0a0010 40%, #1a0030 100%);
+      font-family: 'Inter', sans-serif;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px;
+      overflow-x: hidden;
+    }
+
+    /* Animated background orbs */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(219,39,119,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite reverse;
+      pointer-events: none; z-index: 0;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0,0); }
+      50% { transform: translate(30px, 30px); }
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 18px 24px;
+      background: rgba(10,0,16,0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .logo .demon { font-size: 1.6rem; filter: drop-shadow(0 0 8px #7c3aed); }
+    .logo span {
+      background: linear-gradient(90deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo .v2 {
+      font-size: 0.7rem;
+      background: linear-gradient(90deg, #7c3aed, #db2777);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      margin-left: 2px;
+      vertical-align: super;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 48px 24px 32px;
+      position: relative; z-index: 1;
+    }
+    .hero .demon-big {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 20px #7c3aed);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 20px #7c3aed); }
+      50% { filter: drop-shadow(0 0 40px #a78bfa) drop-shadow(0 0 60px #db2777); }
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      color: #94a3b8;
+      font-size: 1rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Main card */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px 24px;
+      width: calc(100% - 32px);
+      max-width: 540px;
+      backdrop-filter: blur(16px);
+      margin-bottom: 16px;
+      position: relative; z-index: 1;
+      box-shadow: 0 0 40px rgba(124,58,237,0.1);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Upload */
+    .upload-zone {
+      border: 2px dashed rgba(167,139,250,0.35);
+      border-radius: 16px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s;
+      margin-bottom: 20px;
+      background: rgba(124,58,237,0.04);
+    }
+    .upload-zone:hover {
+      border-color: var(--purple-light);
+      background: rgba(124,58,237,0.1);
+      transform: translateY(-1px);
+    }
+    .upload-zone input {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-zone .up-icon { font-size: 2.4rem; margin-bottom: 8px; }
+    .upload-zone .up-text { color: #94a3b8; font-size: 0.92rem; }
+    .upload-zone .up-hint { color: #475569; font-size: 0.76rem; margin-top: 4px; }
+    #preview-wrap { display: none; margin-top: 14px; }
+    #preview-wrap img {
+      width: 100%; max-height: 240px; object-fit: cover;
+      border-radius: 12px; border: 1px solid var(--border);
+    }
+
+    /* Inputs */
+    textarea, input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 20px;
+    }
+    textarea { resize: vertical; min-height: 110px; }
+    textarea::placeholder, input::placeholder { color: #334155; }
+    textarea:focus, input:focus {
+      border-color: var(--purple-light);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+
+    /* Settings */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .setting-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #e2e8f0;
+      padding: 10px 10px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    select option { background: #1a0030; }
+
+    /* Backend URL */
+    #backend-url { margin-bottom: 0; font-family: monospace; font-size: 0.83rem; }
+
+    /* Generate button */
+    #gen-btn {
+      width: 100%;
+      padding: 17px;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.08rem;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+      color: #fff;
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.4);
+    }
+    #gen-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    #gen-btn:hover::before { opacity: 1; }
+    #gen-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 32px rgba(124,58,237,0.5); }
+    #gen-btn:active { transform: scale(0.98); }
+    #gen-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* Status */
+    #status-box {
+      display: none; margin-top: 16px;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 14px; padding: 14px 16px;
+      font-size: 0.9rem; color: var(--purple-light);
+      display: none; align-items: center; gap: 10px;
+    }
+    .spinner {
+      width: 16px; height: 16px; flex-shrink: 0;
+      border: 2px solid rgba(167,139,250,0.25);
+      border-top-color: var(--purple-light);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Progress */
+    #progress-wrap { display: none; margin-top: 12px; }
+    .progress-track {
+      height: 5px; background: rgba(255,255,255,0.07);
+      border-radius: 5px; overflow: hidden;
+    }
+    #progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #f472b6, #fb923c);
+      background-size: 200% 100%;
+      border-radius: 5px; width: 0%;
+      transition: width 0.5s ease;
+      animation: shimmer 2s linear infinite;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    #progress-label { font-size: 0.76rem; color: #64748b; margin-top: 6px; }
+
+    /* Error */
+    #error-box {
+      display: none; margin-top: 14px;
+      background: rgba(220,38,38,0.12);
+      border: 1px solid rgba(220,38,38,0.25);
+      border-radius: 14px; padding: 13px 16px;
+      color: #fca5a5; font-size: 0.88rem;
+    }
+
+    /* Output */
+    #output-card { display: none; }
+    #output-video {
+      width: 100%; border-radius: 16px;
+      background: #000; outline: none; margin-bottom: 14px;
+      box-shadow: 0 0 30px rgba(124,58,237,0.2);
+    }
+    #dl-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #059669, #0891b2);
+      border-radius: 14px; color: #fff;
+      font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; transition: opacity 0.2s;
+      box-shadow: 0 4px 16px rgba(5,150,105,0.3);
+    }
+    #dl-btn:hover { opacity: 0.88; }
+
+    footer {
+      margin-top: 40px; font-size: 0.76rem;
+      color: #334155; text-align: center;
+      position: relative; z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="demon">👿</span>
+    <span>Menace AI</span><span class="v2">V2</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <span class="demon-big">👿</span>
+  <h1>Menace AI V2</h1>
+  <p>Upload a face, type a prompt, get a video</p>
+</div>
+
+<!-- Backend URL -->
+<div class="card">
+  <div class="section-label">🔗 Backend URL</div>
+  <input type="text" id="backend-url" placeholder="https://yourname-menace-ai-v2.hf.space"/>
+</div>
+
+<!-- Main -->
+<div class="card">
+  <div class="section-label">📸 Photo</div>
+  <div class="upload-zone">
+    <input type="file" id="photo-input" accept="image/*" capture="environment"/>
+    <div class="up-icon">👿</div>
+    <div class="up-text">Tap to upload or take a photo</div>
+    <div class="up-hint">JPG · PNG · WEBP — Max 10MB</div>
+    <div id="preview-wrap"><img id="preview-img" src="" alt=""/></div>
+  </div>
+
+  <div class="section-label">✍️ Prompt</div>
+  <textarea id="prompt" placeholder="Type what should happen or what the person should say..."></textarea>
+
+  <div class="section-label">⚙️ Settings</div>
+  <div class="settings-grid">
+    <div class="setting-group">
+      <label>Style</label>
+      <select id="style">
+        <option value="realistic">Realistic</option>
+        <option value="cinematic">Cinematic</option>
+        <option value="anime">Anime</option>
+        <option value="cartoon">Cartoon</option>
+      </select>
+    </div>
+    <div class="setting-group">
+      <label>Duration</label>
+      <select id="duration">
+        <option value="3">3s</option>
+        <option value="5" selected>5s</option>
+        <option value="10">10s</option>
+      </select>
+    </div>
+    <div class="setting-group">
+      <label>Voice</label>
+      <select id="voice">
+        <option value="none">None</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="neutral">Neutral</option>
+      </select>
+    </div>
+  </div>
+
+  <button id="gen-btn" onclick="generate()">👿 Generate Video</button>
+
+  <div id="status-box">
+    <div class="spinner"></div>
+    <span id="status-text">Sending to backend...</span>
+  </div>
+  <div id="progress-wrap">
+    <div class="progress-track"><div id="progress-fill"></div></div>
+    <div id="progress-label">Starting...</div>
+  </div>
+  <div id="error-box"></div>
+</div>
+
+<!-- Output -->
+<div class="card" id="output-card">
+  <div class="section-label">🎬 Output</div>
+  <video id="output-video" controls playsinline></video>
+  <a id="dl-btn" href="#" download="menace-ai-v2.mp4">⬇️ Download Video</a>
+</div>
+
+<footer>👿 Menace AI V2 — Powered by SadTalker + Hugging Face</footer>
+
+<script>
+  // Photo preview
+  document.getElementById('photo-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('preview-img').src = ev.target.result;
+      document.getElementById('preview-wrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Progress
+  let prog = null;
+  const msgs = ['Uploading photo...','Analyzing face...','Generating audio...','Animating face...','Rendering frames...','Finalizing video...'];
+  function startProgress() {
+    let pct = 0, step = 0;
+    document.getElementById('progress-wrap').style.display = 'block';
+    prog = setInterval(() => {
+      if (pct < 88) {
+        pct += Math.random() * 2.5;
+        document.getElementById('progress-fill').style.width = Math.min(pct,88) + '%';
+        document.getElementById('progress-label').textContent = msgs[Math.floor(pct/15)] || msgs[5];
+      }
+    }, 600);
+  }
+  function endProgress() {
+    clearInterval(prog);
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-label').textContent = 'Done!';
+    setTimeout(() => document.getElementById('progress-wrap').style.display = 'none', 1200);
+  }
+
+  function setStatus(msg) {
+    const el = document.getElementById('status-box');
+    el.style.display = 'flex';
+    document.getElementById('status-text').textContent = msg;
+  }
+  function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = '❌ ' + msg;
+    el.style.display = 'block';
+    document.getElementById('gen-btn').disabled = false;
+  }
+  function clearUI() {
+    document.getElementById('error-box').style.display = 'none';
+    document.getElementById('output-card').style.display = 'none';
+    document.getElementById('status-box').style.display = 'none';
+  }
+
+  async function generate() {
+    const url      = document.getElementById('backend-url').value.trim().replace(/\/$/,'');
+    const file     = document.getElementById('photo-input').files[0];
+    const prompt   = document.getElementById('prompt').value.trim();
+    const style    = document.getElementById('style').value;
+    const duration = document.getElementById('duration').value;
+    const voice    = document.getElementById('voice').value;
+
+    if (!url)    return showError('Paste your Hugging Face Space URL above.');
+    if (!file)   return showError('Upload a photo first.');
+    if (!prompt) return showError('Enter a prompt.');
+
+    clearUI();
+    document.getElementById('gen-btn').disabled = true;
+    setStatus('Connecting to backend...');
+    startProgress();
+
+    try {
+      const form = new FormData();
+      form.append('photo', file);
+      form.append('prompt', prompt);
+      form.append('style', style);
+      form.append('duration', duration);
+      form.append('voice', voice);
+
+      setStatus('Generating — this takes 1–3 min...');
+      const res = await fetch(`${url}/api/predict`, { method:'POST', body: form });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      endProgress();
+
+      const vid = data.data?.[0];
+      if (!vid) throw new Error('No video in response.');
+
+      const videoEl = document.getElementById('output-video');
+      const dlBtn   = document.getElementById('dl-btn');
+      const src = (typeof vid === 'string' && vid.startsWith('http')) ? vid
+                : (vid?.url) ? vid.url
+                : `${url}${vid}`;
+      videoEl.src = src;
+      dlBtn.href  = src;
+
+      document.getElementById('output-card').style.display = 'block';
+      document.getElementById('status-box').style.display  = 'none';
+
+    } catch(err) {
+      endProgress();
+      showError(err.message || 'Something went wrong.');
+      document.getElementById('status-box').style.display = 'none';
+    }
+
+    document.getElementById('gen-btn').disabled = false;
+  }
+</script>
+</body>
+</html>
