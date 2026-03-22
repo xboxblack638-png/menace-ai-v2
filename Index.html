@@ -27,9 +27,7 @@
       backdrop-filter: blur(10px);
     }
 
-    h1 {
-      margin-bottom: 10px;
-    }
+    h1 { margin-bottom: 10px; }
 
     input, button {
       width: 100%;
@@ -52,21 +50,11 @@
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: 0.9;
-    }
+    button:hover { opacity: 0.9; }
 
-    #status {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.8;
-    }
+    #status { margin-top: 10px; font-size: 13px; opacity: 0.8; }
 
-    video {
-      width: 100%;
-      margin-top: 15px;
-      border-radius: 10px;
-    }
+    video { width: 100%; margin-top: 15px; border-radius: 10px; }
 
     a {
       display: none;
@@ -98,10 +86,7 @@
       const image = document.getElementById("imageInput").files[0];
       const prompt = document.getElementById("prompt").value;
 
-      if (!image) {
-        alert("Upload an image first");
-        return;
-      }
+      if (!image) { alert("Upload an image first"); return; }
 
       document.getElementById("status").innerText = "Generating... wait a bit";
 
@@ -109,7 +94,8 @@
       formData.append("image", image);
       formData.append("prompt", prompt);
 
-      const response = await fetch("https://60e9d0367b96944a91.gradio.live/file=generate_video", {
+      // ✅ Updated Gradio backend link
+      const response = await fetch("https://290a6c3ed872d914db.gradio.live/file=generate_video", {
         method: "POST",
         body: formData
       });
