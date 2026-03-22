@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="theme-color" content="#0a0010"/>
+  <title>Menace AI V2</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+    :root {
+      --purple: #7c3aed;
+      --purple-light: #a78bfa;
+      --pink: #db2777;
+      --border: rgba(167,139,250,0.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overscroll-behavior: none; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 20% 0%, rgba(124,58,237,0.25) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 100%, rgba(219,39,119,0.15) 0%, transparent 60%),
+                  #0a0010;
+      font-family: 'Inter', sans-serif;
+      color: #e2e8f0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    nav {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      background: rgba(10,0,16,0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 99;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 900; }
+    .demon { font-size: 1.5rem; animation: glow 3s ease-in-out infinite; }
+    @keyframes glow {
+      0%,100% { filter: drop-shadow(0 0 8px #7c3aed); }
+      50% { filter: drop-shadow(0 0 20px #a855f7) drop-shadow(0 0 35px #db2777); }
+    }
+    .logo-text { background: linear-gradient(90deg,#c084fc,#f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .logo-v2 { font-size: 0.6rem; font-weight:700; background: linear-gradient(90deg,#7c3aed,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; vertical-align:super; }
+    .badge { background: linear-gradient(135deg,#7c3aed,#db2777); border-radius:20px; padding:4px 12px; font-size:0.7rem; font-weight:700; color:#fff; }
+    .content { width:100%; max-width:500px; padding:20px 16px 60px; display:flex; flex-direction:column; gap:14px; }
+    .hero { text-align:center; padding:24px 0 8px; }
+    .hero-demon { font-size:3.5rem; display:block; margin-bottom:10px; animation:glow 3s ease-in-out infinite; }
+    .hero h1 { font-size:clamp(1.8rem,6vw,2.8rem); font-weight:900; background:linear-gradient(135deg,#a78bfa,#f472b6,#fb923c); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.1; margin-bottom:8px; }
+    .hero p { color:#64748b; font-size:0.9rem; }
+    .card { background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:22px; padding:22px 18px; backdrop-filter:blur(12px); box-shadow:0 0 30px rgba(124,58,237,0.08); }
+    .lbl { font-size:0.72rem; font-weight:700; color:var(--purple-light); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+    .upload-zone {
+      border:2px dashed rgba(167,139,250,0.3); border-radius:16px; padding:30px 16px;
+      text-align:center; cursor:pointer; position:relative; transition:all 0.2s;
+      background:rgba(124,58,237,0.03);
+    }
+    .upload-zone:hover { border-color:var(--purple-light); background:rgba(124,58,237,0.08); }
+    .upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+    .upload-zone .up-icon { font-size:2.2rem; margin-bottom:8px; }
+    .upload-zone .up-text { color:#94a3b8; font-size:0.9rem; }
+    .upload-zone .up-hint { color:#334155; font-size:0.74rem; margin-top:4px; }
+    #preview-wrap { display:none; margin-top:14px; }
+    #preview-wrap img { width:100%; max-height:220px; object-fit:cover; border-radius:12px; border:1px solid var(--border); }
+    textarea {
+      width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+      border-radius:14px; color:#e2e8f0; font-family:'Inter',sans-serif;
+      font-size:0.95rem; padding:14px 16px; resize:vertical; min-height:110px;
+      outline:none; transition:border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea::placeholder { color:#334155; }
+    textarea:focus { border-color:var(--purple-light); box-shadow:0 0 0 3px rgba(124,58,237,0.15); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+    .sg label { display:block; font-size:0.7rem; font-weight:700; color:var(--purple-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+    select {
+      width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+      border-radius:10px; color:#e2e8f0; padding:10px 12px; font-size:0.85rem;
+      outline:none; cursor:pointer; font-family:'Inter',sans-serif;
+    }
+    select option { background:#1a0030; }
+    #gen-btn {
+      width:100%; padding:17px; border:none; border-radius:16px;
+      font-size:1.05rem; font-weight:800; cursor:pointer;
+      background:linear-gradient(135deg,#7c3aed,#db2777);
+      color:#fff; letter-spacing:0.3px;
+      transition:all 0.2s;
+      box-shadow:0 4px 24px rgba(124,58,237,0.4);
+    }
+    #gen-btn:hover { transform:translateY(-1px); box-shadow:0 6px 32px rgba(124,58,237,0.55); }
+    #gen-btn:active { transform:scale(0.98); }
+    #gen-btn:disabled { opacity:0.45; cursor:not-allowed; transform:none; }
+    #status-box {
+      display:none; align-items:center; gap:10px; margin-top:14px;
+      background:rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.25);
+      border-radius:14px; padding:14px 16px; font-size:0.88rem; color:var(--purple-light);
+    }
+    .spinner { width:16px; height:16px; flex-shrink:0; border:2px solid rgba(167,139,250,0.2); border-top-color:var(--purple-light); border-radius:50%; animation:spin 0.75s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #progress-wrap { display:none; margin-top:12px; }
+    .prog-track { height:5px; background:rgba(255,255,255,0.07); border-radius:5px; overflow:hidden; }
+    #prog-fill { height:100%; background:linear-gradient(90deg,#7c3aed,#f472b6,#fb923c); background-size:200% 100%; border-radius:5px; width:0%; transition:width 0.5s; animation:shimmer 2s linear infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    #prog-label { font-size:0.75rem; color:#475569; margin-top:6px; }
+    #error-box { display:none; margin-top:14px; background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.25); border-radius:14px; padding:13px 16px; color:#fca5a5; font-size:0.87rem; }
+    #output-card { display:none; }
+    #output-video { width:100%; border-radius:16px; background:#000; outline:none; margin-bottom:14px; box-shadow:0 0 30px rgba(124,58,237,0.2); }
+    #dl-btn {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      width:100%; padding:14px; background:linear-gradient(135deg,#059669,#0891b2);
+      border-radius:14px; color:#fff; font-weight:700; font-size:0.95rem;
+      text-decoration:none; transition:opacity 0.2s;
+      box-shadow:0 4px 16px rgba(5,150,105,0.25);
+    }
+    #dl-btn:hover { opacity:0.88; }
+    footer { margin-top:32px; padding-bottom:24px; font-size:0.73rem; color:#1e293b; text-align:center; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="demon">👿</span>
+    <span class="logo-text">Menace AI</span><span class="logo-v2">V2</span>
+  </div>
+  <div class="badge">FREE</div>
+</nav>
+
+<div class="content">
+  <div class="hero">
+    <span class="hero-demon">👿</span>
+    <h1>Menace AI V2</h1>
+    <p>Upload a face · Type a prompt · Get a video</p>
+  </div>
+
+  <div class="card">
+    <div class="lbl">📸 Photo</div>
+    <div class="upload-zone">
+      <input type="file" id="photo-input" accept="image/*" capture="environment"/>
+      <div class="up-icon">👿</div>
+      <div class="up-text">Tap to upload or take a photo</div>
+      <div class="up-hint">JPG · PNG · WEBP</div>
+      <div id="preview-wrap"><img id="preview-img" src="" alt=""/></div>
+    </div>
+
+    <div class="lbl">✍️ Prompt</div>
+    <textarea id="prompt" placeholder="Describe what should happen or what they should say..."></textarea>
+
+    <div class="grid">
+      <div class="sg">
+        <label>Duration</label>
+        <select id="duration">
+          <option value="5" selected>5 seconds</option>
+          <option value="10">10 seconds</option>
+        </select>
+      </div>
+      <div class="sg">
+        <label>Voice</label>
+        <select id="voice">
+          <option value="none">No voice</option>
+          <option value="female" selected>Female</option>
+          <option value="male">Male</option>
+          <option value="neutral">Neutral</option>
+        </select>
+      </div>
+    </div>
+
+    <br/>
+    <button id="gen-btn" onclick="generate()">👿 Generate Video</button>
+
+    <div id="status-box">
+      <div class="spinner"></div>
+      <span id="status-text">Starting...</span>
+    </div>
+    <div id="progress-wrap">
+      <div class="prog-track"><div id="prog-fill"></div></div>
+      <div id="prog-label">Warming up...</div>
+    </div>
+    <div id="error-box"></div>
+  </div>
+
+  <div class="card" id="output-card">
+    <div class="lbl">🎬 Your Video</div>
+    <video id="output-video" controls playsinline></video>
+    <a id="dl-btn" href="#" download="menace-ai-v2.mp4">⬇️ Download Video</a>
+  </div>
+</div>
+
+<footer>👿 Menace AI V2</footer>
+
+<script>
+  const BACKEND = "https://xboxblack638-menace-ai-v2.hf.space";
+
+  document.getElementById('photo-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('preview-img').src = ev.target.result;
+      document.getElementById('preview-wrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  let progInt = null;
+  const progMsgs = ['Uploading photo...','Analyzing face...','Generating video...','Rendering frames...','Adding voice...','Almost done...'];
+  function startProg() {
+    let p = 0, s = 0;
+    document.getElementById('progress-wrap').style.display = 'block';
+    progInt = setInterval(() => {
+      if (p < 88) {
+        p += Math.random() * 1.8;
+        document.getElementById('prog-fill').style.width = Math.min(p,88)+'%';
+        document.getElementById('prog-label').textContent = progMsgs[Math.floor(p/16)] || progMsgs[5];
+      }
+    }, 700);
+  }
+  function endProg() {
+    clearInterval(progInt);
+    document.getElementById('prog-fill').style.width = '100%';
+    document.getElementById('prog-label').textContent = 'Done!';
+    setTimeout(() => document.getElementById('progress-wrap').style.display = 'none', 1200);
+  }
+  function setStatus(msg) {
+    const el = document.getElementById('status-box');
+    el.style.display = 'flex';
+    document.getElementById('status-text').textContent = msg;
+  }
+  function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = '❌ ' + msg;
+    el.style.display = 'block';
+    document.getElementById('gen-btn').disabled = false;
+  }
+  function clearUI() {
+    document.getElementById('error-box').style.display = 'none';
+    document.getElementById('output-card').style.display = 'none';
+    document.getElementById('status-box').style.display = 'none';
+  }
+
+  async function generate() {
+    const file     = document.getElementById('photo-input').files[0];
+    const prompt   = document.getElementById('prompt').value.trim();
+    const duration = document.getElementById('duration').value;
+    const voice    = document.getElementById('voice').value;
+
+    if (!file)   return showError('Upload a photo first.');
+    if (!prompt) return showError('Enter a prompt.');
+
+    clearUI();
+    document.getElementById('gen-btn').disabled = true;
+    setStatus('Connecting...');
+    startProg();
+
+    try {
+      const form = new FormData();
+      form.append('photo', file);
+      form.append('prompt', prompt);
+      form.append('duration', duration);
+      form.append('voice', voice);
+
+      setStatus('Generating video — takes 2–3 min...');
+      const res = await fetch(`${BACKEND}/api/predict`, { method:'POST', body:form });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const data = await res.json();
+      endProg();
+
+      const vid = data.data?.[0];
+      if (!vid) throw new Error('No video returned.');
+
+      const src = typeof vid === 'string' && vid.startsWith('http') ? vid
+                : vid?.url ? vid.url
+                : `${BACKEND}${vid}`;
+
+      document.getElementById('output-video').src = src;
+      document.getElementById('dl-btn').href = src;
+      document.getElementById('output-card').style.display = 'block';
+      document.getElementById('status-box').style.display = 'none';
+
+    } catch(err) {
+      endProg();
+      showError(err.message || 'Something went wrong.');
+      document.getElementById('status-box').style.display = 'none';
+    }
+    document.getElementById('gen-btn').disabled = false;
+  }
+</script>
+</body>
+</html>
