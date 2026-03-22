@@ -1,0 +1,10 @@
+gradio
+torch
+torchvision
+torchaudio
+Pillow
+imageio
+imageio-ffmpeg
+numpy
+gTTS
+opencv-python-headless
